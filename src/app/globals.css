@@ -62,4 +62,16 @@
 .secoundaryShadow{
   box-shadow: 0 0 11px 0 #0ab6ab7d;
 }
-
+.options{
+  position: relative;
+}
+.options__wrapper{
+  visibility: hidden;
+  opacity: 0;
+  transition:  all 150ms ease-in;
+  animation-duration: 75ms;
+}
+.options:hover .options__wrapper{
+  visibility: visible;
+  opacity: 1;
+}
