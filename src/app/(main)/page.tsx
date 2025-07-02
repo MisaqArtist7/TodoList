@@ -11,10 +11,10 @@ export default function Page() {
     hasDone: boolean,
   }
   // Todos wrapper
+  const [count, setCount] = useState(1)
   const [todos, setTodos] = useState<todo[]>([
-    {id:1, title: 'Do exercise', time: '6:00', hasDone: true},
-    {id:2, title: 'Meditation', time: '7:00', hasDone: false},
-  ])
+    {id:count, title: 'Do exercise', time: '6:00', hasDone: true},
+])
   
   // Remove todo
   const removeTodo = (id : number) => {
@@ -46,22 +46,30 @@ export default function Page() {
 
   useEffect(() => {
     const now = new Date();
-    const hours = now.getHours().toString().padStart(2, '0');
+    let hours = now.getHours();
     const minutes = now.getMinutes().toString().padStart(2, '0');
-    setTime(`${hours}:${minutes}`);
+
+    const period = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    if (hours === 0) hours = 12;    
+
+    const currentTime = `${hours.toString().padStart(2, '0')}:${minutes} ${period}`;
+    setTime(currentTime);
   }, []);
+
 
   const submitted = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsModalOpen((prevState) => !prevState);
     setInputValue('')
-    
+
     const newTodo: NewTodo = {
-      id: Date.now(),
+      id: count + 1,
       title: inputValue,
       time: time,
       hasDone: false,
     };
+    setCount((prevState) => prevState + 1)
     setTodos((prevState) => [...prevState, newTodo])
   };
 
