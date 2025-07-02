@@ -3,25 +3,26 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 export default function Page() {
 
-  // type of todos
+  // Type of todos
   interface todo {
     id: number,
     title: string,
     time: string,
     hasDone: boolean,
   }
-  // todos wrapper
+  // Todos wrapper
   const [todos, setTodos] = useState<todo[]>([
     {id:1, title: 'Do exercise', time: '6:00', hasDone: true},
     {id:2, title: 'Meditation', time: '7:00', hasDone: false},
   ])
   
-  // remove todo
+  // Remove todo
   const removeTodo = (id : number) => {
     const updatedTodos = todos.filter((todo) => todo.id !== id);
     setTodos(updatedTodos);
   }
 
+  // Done todo
   const doneTodo = (id: number) => {
     const updatedTodos = todos.map((todo) =>
       todo.id === id ? { ...todo, hasDone: !todo.hasDone } : todo
@@ -29,7 +30,11 @@ export default function Page() {
     setTodos(updatedTodos);
   };
 
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const submitted = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsModalOpen((prevState) => !prevState);
+  };
 
   return (
     <section className='flex-row-center min-h-screen'>
@@ -113,7 +118,7 @@ export default function Page() {
 
           {/* Floating Add button at the bottom right */}
           <div className='mt-7 flex justify-end items-center hover:cursor-pointer'>
-            <div className='secoundaryShadow bg-[#152C2B] h-16 w-16 rounded-full flex-row-center'>
+            <div onClick={()=> setIsModalOpen((prevState) => !prevState)} className='secoundaryShadow bg-[#152C2B] h-16 w-16 rounded-full flex-row-center'>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" className="w-7 h-7">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
@@ -121,6 +126,36 @@ export default function Page() {
           </div>
         </div>
       </div>
+      
+      {isModalOpen && (
+      <>
+        {/* Modal Overlay */}
+        <div className='z-50 bg-black/80 flex-row-center min-h-screen absolute right-0 left-0 top-0 bottom-0'>
+
+          {/* Modal Box */}
+          <div className='primaryShadow bg-[#201F1F] w-[90%] sm:w-[50%] lg:w-[30%] rounded-md text-white'>
+
+            {/* Modal Header / Close Button */}
+            <div className='flex items-center justify-end bg-[#152C2B] px-3 py-4 rounded-t-md'>
+              <span onClick={()=> setIsModalOpen((prevState) => !prevState)} className='hover:cursor-pointer'>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" className="w-8 h-8">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </span>
+            </div>
+
+            {/* Modal Content / Form */}
+            <div className='px-3 py-4'>
+              <form onSubmit={submitted} action="" className='flex-col-center gap-2'>
+                <input type="text" placeholder='Enter something...' className='border-b w-[70%]'/>
+                <button type="submit" className='border border-gray-600 px-11 py-2 mt-4 rounded-lg secoundaryShadow hover:bg-[#152C2B]'>Enter</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </>
+      )}
+
     </section>
   )
 }
