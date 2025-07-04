@@ -107,34 +107,36 @@ export default function Page() {
    * Handle form submission for adding or updating a todo
    * @param event - The form submission event
    */
-  const submitted = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+const submitted = (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
 
-    // Close modal on submit
-    setIsModalOpen(false);
+  if (inputValue.trim() === "") {
+    alert("Please enter a todo title!");
+    return;
+  }
 
-    if (editingTodoId !== null) {
-      // Edit mode: update existing todo title
-      const updatedTodos = todos.map(todo =>
-        todo.id === editingTodoId ? { ...todo, title: inputValue } : todo
-      );
-      setTodos(updatedTodos);
-      setEditingTodoId(null); // Reset edit mode
-    } else {
-      // Add mode: create a new todo with current input and time
-      const newTodo: NewTodo = {
-        id: count,
-        title: inputValue,
-        time: time,
-        hasDone: false,
-      };
-      setCount(prev => prev + 1);
-      setTodos(prev => [...prev, newTodo]);
-    }
+  setIsModalOpen(false);
 
-    // Clear input field after submission
-    setInputValue('');
-  };
+  if (editingTodoId !== null) {
+    const updatedTodos = todos.map(todo =>
+      todo.id === editingTodoId ? { ...todo, title: inputValue } : todo
+    );
+    setTodos(updatedTodos);
+    setEditingTodoId(null);
+  } else {
+    const newTodo: NewTodo = {
+      id: count,
+      title: inputValue,
+      time: time,
+      hasDone: false,
+    };
+    setCount(prev => prev + 1);
+    setTodos(prev => [...prev, newTodo]);
+  }
+
+  setInputValue('');
+};
+
 
   /**
    * Load todos from localStorage on component mount, if any exist
