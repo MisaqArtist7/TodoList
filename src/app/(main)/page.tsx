@@ -1,26 +1,36 @@
 "use client";
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
+
 export default function Page() {
 
-  // Type of todos
+  // Type definition for a single todo item
   interface todo {
     id: number,
     title: string,
     time: string,
     hasDone: boolean,
   }
-  // Todos wrapper
+
+  // State to generate unique IDs for todos
   const [count, setCount] = useState(1)
+
+  // State to hold the list of todos
   const [todos, setTodos] = useState<todo[]>([])
-  
-  // Remove todo
-  const removeTodo = (id : number) => {
+
+  /**
+   * Remove a todo item from the list by its ID
+   * @param id - The ID of the todo to remove
+   */
+  const removeTodo = (id: number) => {
     const updatedTodos = todos.filter((todo) => todo.id !== id);
     setTodos(updatedTodos);
   }
 
-  // Done todo
+  /**
+   * Toggle the "hasDone" status of a todo item
+   * @param id - The ID of the todo to update
+   */
   const doneTodo = (id: number) => {
     const updatedTodos = todos.map((todo) =>
       todo.id === id ? { ...todo, hasDone: !todo.hasDone } : todo
@@ -28,25 +38,42 @@ export default function Page() {
     setTodos(updatedTodos);
   };
 
+  /**
+   * Toggle the "hasDone" status for all todos at once
+   */
   const checkAll = () => {
     const updatedTodos = todos.map(todo => ({ ...todo, hasDone: !todo.hasDone }));
     setTodos(updatedTodos);
   }
 
+  // State to control the modal visibility
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // State to track the current input value in the modal form
   const [inputValue, setInputValue] = useState('')
+
+  /**
+   * Handle changes in the input field for a new todo title
+   * @param event - The input change event
+   */
   const inputHandler = (event: React.FormEvent<HTMLInputElement>) => {
     setInputValue(event.currentTarget.value)
   };
 
+  // Type definition for a new todo item (same as existing todos)
   interface NewTodo {
     id: number,
     title: string,
     time: string,
     hasDone: boolean,
   }
+
+  // State to hold the current formatted time
   const [time, setTime] = useState<string>("");
 
+  /**
+   * On initial mount, calculate and set the current time
+   */
   useEffect(() => {
     const now = new Date();
     let hours = now.getHours();
@@ -60,23 +87,37 @@ export default function Page() {
     setTime(currentTime);
   }, []);
 
-
+  /**
+   * Handle submission of the new todo form
+   * @param event - The form submission event
+   */
   const submitted = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    // Close modal after submission
     setIsModalOpen((prevState) => !prevState);
+
+    // Clear input field
     setInputValue('')
 
+    // Create a new todo item
     const newTodo: NewTodo = {
       id: count + 1,
       title: inputValue,
       time: time,
       hasDone: false,
     };
-    setCount((prevState) => prevState + 1)
-    setTodos((prevState) => [...prevState, newTodo])
+
+    // Increment the count for future IDs
+    setCount((prevState) => prevState + 1);
+
+    // Add the new todo to the list
+    setTodos((prevState) => [...prevState, newTodo]);
   };
 
-  // Load todos from localStorage on mount
+  /**
+   * On initial mount, load todos from localStorage if they exist
+   */
   useEffect(() => {
     const savedTodos = localStorage.getItem('todos');
     if (savedTodos) {
@@ -84,11 +125,14 @@ export default function Page() {
     }
   }, []);
 
-  // Save todos to localStorage on todos state change
+  /**
+   * Whenever the todos list changes, save it to localStorage
+   */
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos));
   }, [todos]);
 
+  // ... the rest of your component JSX goes here
   return (
     <section className='flex-row-center min-h-screen select-none'>
       {/* Left-side decorative image positioned absolutely near the top */}
