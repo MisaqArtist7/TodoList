@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-:root {
-
-}
-
 @layer base {
   /* Helper classes */  
   .flex-row-center{
