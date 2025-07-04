@@ -20,4 +20,4 @@ Users can add, edit, delete, and mark todos as done. Todos are persisted in loca
 💻 Built with Next.js and TypeScript
 -------------------------------------
 
-![UI Image](/images/User%20interface/1.png)
+![UI Image](/public/images/User%20interface/1.png)
