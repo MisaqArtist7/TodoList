@@ -68,11 +68,11 @@ export default function Page() {
     hasDone: boolean,
   }
 
-  // State to hold the current formatted time
+  // State to hold the current formatted time string
   const [time, setTime] = useState<string>("");
 
   /**
-   * On initial mount, calculate and set the current time
+   * On component mount, get and format the current time (e.g. 08:30 PM)
    */
   useEffect(() => {
     const now = new Date();
@@ -88,35 +88,56 @@ export default function Page() {
   }, []);
 
   /**
-   * Handle submission of the new todo form
+   * Store the ID of the todo currently being edited
+   */
+  const [editingTodoId, setEditingTodoId] = useState<number | null>(null);
+
+  /**
+   * Prepare the UI to edit a todo: set input value and open modal
+   * @param todo - The todo item to edit
+   */
+  const updateTodo = (todo: todo) => {
+    setInputValue(todo.title);
+    setIsModalOpen(true);
+    setEditingTodoId(todo.id);
+    setInputValue('') // Clear input after setting? (Might be redundant)
+  }
+
+  /**
+   * Handle form submission for adding or updating a todo
    * @param event - The form submission event
    */
   const submitted = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // Close modal after submission
-    setIsModalOpen((prevState) => !prevState);
+    // Close modal on submit
+    setIsModalOpen(false);
 
-    // Clear input field
-    setInputValue('')
+    if (editingTodoId !== null) {
+      // Edit mode: update existing todo title
+      const updatedTodos = todos.map(todo =>
+        todo.id === editingTodoId ? { ...todo, title: inputValue } : todo
+      );
+      setTodos(updatedTodos);
+      setEditingTodoId(null); // Reset edit mode
+    } else {
+      // Add mode: create a new todo with current input and time
+      const newTodo: NewTodo = {
+        id: count,
+        title: inputValue,
+        time: time,
+        hasDone: false,
+      };
+      setCount(prev => prev + 1);
+      setTodos(prev => [...prev, newTodo]);
+    }
 
-    // Create a new todo item
-    const newTodo: NewTodo = {
-      id: count + 1,
-      title: inputValue,
-      time: time,
-      hasDone: false,
-    };
-
-    // Increment the count for future IDs
-    setCount((prevState) => prevState + 1);
-
-    // Add the new todo to the list
-    setTodos((prevState) => [...prevState, newTodo]);
+    // Clear input field after submission
+    setInputValue('');
   };
 
   /**
-   * On initial mount, load todos from localStorage if they exist
+   * Load todos from localStorage on component mount, if any exist
    */
   useEffect(() => {
     const savedTodos = localStorage.getItem('todos');
@@ -126,13 +147,14 @@ export default function Page() {
   }, []);
 
   /**
-   * Whenever the todos list changes, save it to localStorage
+   * Save the current todos list to localStorage whenever it changes
    */
   useEffect(() => {
     localStorage.setItem('todos', JSON.stringify(todos));
   }, [todos]);
 
-  // ... the rest of your component JSX goes here
+  // ... your JSX goes here inside the return statement
+ 
   return (
     <section className='flex-row-center min-h-screen select-none'>
       {/* Left-side decorative image positioned absolutely near the top */}
@@ -219,8 +241,11 @@ export default function Page() {
                     <svg onClick={()=> removeTodo(todo.id)}  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5 cursor-pointer">
                       <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                     </svg>
+
+                    <svg onClick={()=> updateTodo(todo)} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-5 h-5 cursor-pointer">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                    </svg>
                   </div>
-                  
                 </div>
               </React.Fragment>
             ))}
