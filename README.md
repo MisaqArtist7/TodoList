@@ -36,10 +36,10 @@ Done Todo
 
 -------------------------------------
 🚀 How to install and run
-git clone https://github.com/MisaqArtist7/TodoList.git
-cd TodoList
-npm install
-npm run dev
-Open http://localhost:3000 in your browser.
+- git clone https://github.com/MisaqArtist7/TodoList.git
+- cd TodoList
+- npm install
+- npm run dev
+- Open http://localhost:3000 in your browser.
 
 
