@@ -42,4 +42,6 @@ Done Todo
 - npm run dev
 - Open http://localhost:3000 in your browser.
 
+- 💻 show online: https://todo-list-three-pi-27.vercel.app/
+
 
