@@ -70,21 +70,32 @@ export default function Page() {
 
   // State to hold the current formatted time string
   const [time, setTime] = useState<string>("");
+  const [formattedDate, setFormattedDate] = useState<string>("");
 
   /**
    * On component mount, get and format the current time (e.g. 08:30 PM)
    */
+
   useEffect(() => {
     const now = new Date();
     let hours = now.getHours();
     const minutes = now.getMinutes().toString().padStart(2, '0');
-
+    
     const period = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12;
     if (hours === 0) hours = 12;    
 
     const currentTime = `${hours.toString().padStart(2, '0')}:${minutes} ${period}`;
     setTime(currentTime);
+    
+    const options: Intl.DateTimeFormatOptions = {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    };
+    const dateString = now.toLocaleDateString("en-US", options);
+    console.log(dateString)
+    setFormattedDate(dateString);
   }, []);
 
   /**
@@ -215,7 +226,7 @@ const submitted = (event: React.FormEvent<HTMLFormElement>) => {
           {/* Header section showing today's date */}
           <div className='flex flex-col justify-center'>
             <h2 className='font-bold'>Today</h2>
-            <span className='text-[#7D7878]'>1July, 2025</span>
+            <span className='text-[#7D7878]'>{formattedDate}</span>
           </div>
 
           {/* Container for the list of todo items */}
