@@ -22,6 +22,7 @@ Users can add, edit, delete, and mark todos as done. Todos are persisted in loca
 💻 Built with Next.js and TypeScript
 -------------------------------------   
 📸 Screenshots
+
 ![UI Image](/public/images/User%20interface/1.png)
 
 Empty Todo
@@ -42,6 +43,6 @@ Done Todo
 - npm run dev
 - Open http://localhost:3000 in your browser.
 
-- Preview: https://todo-list-three-pi-27.vercel.app/
+- Preview: https://todo-list-three-pi-27.vercel.app/ 
 
 
